@@ -3,6 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
 import SizeScreen from './screens/SizeScreen';
+import CrustScreen from './screens/CrustScreen';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,12 +96,23 @@ function App() {
     setActiveStep(0);
   };
 
-  const getStepContent = (stepIndex: number) => {
-    switch (stepIndex) {
+  const handleNextDisable = () => {
+    switch (activeStep) {
+      case 0:
+        return !size;
+      case 1:
+        return !crust;
+      default:
+        return false;
+    }
+  };
+
+  const getStepContent = () => {
+    switch (activeStep) {
       case 0:
         return <SizeScreen />;
       case 1:
-        return <SizeScreen />;
+        return <CrustScreen />;
       case 2:
         return <SizeScreen />;
       case 3:
@@ -142,9 +154,7 @@ function App() {
             </div>
           ) : (
             <div>
-              <div className={classes.instructions}>
-                {getStepContent(activeStep)}
-              </div>
+              <div className={classes.instructions}>{getStepContent()}</div>
               <div>
                 <Button
                   disabled={activeStep === 0}
@@ -157,6 +167,7 @@ function App() {
                   variant='contained'
                   color='primary'
                   onClick={handleNext}
+                  disabled={handleNextDisable()}
                 >
                   {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
                 </Button>

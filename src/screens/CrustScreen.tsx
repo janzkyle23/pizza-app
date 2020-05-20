@@ -8,21 +8,21 @@ import {
   FormLabel,
 } from '@material-ui/core';
 
-const SizeScreen = () => {
-  const { size, setSize, sizePrice } = useContext(OrderContext);
+const CrustScreen = () => {
+  const { crust, setCrust, crustPrice } = useContext(OrderContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = (event.target as HTMLInputElement).value;
     // this validation doesn't follow DRY principle but it conforms with TS type analysis
-    if (newValue === 'Small' || newValue === 'Medium' || newValue === 'Large') {
-      setSize(newValue);
+    if (newValue === 'Thin' || newValue === 'Thick') {
+      setCrust(newValue);
     } else {
-      console.error('size input error');
-      setSize(null);
+      console.error('crust input error');
+      setCrust(null);
     }
   };
 
-  const sizesRadio = Object.entries(sizePrice).map(([key, value]) => (
+  const crustsRadio = Object.entries(crustPrice).map(([key, value]) => (
     <div key={key}>
       <FormControlLabel value={key} control={<Radio />} label={key} />
       {value}
@@ -31,17 +31,17 @@ const SizeScreen = () => {
 
   return (
     <FormControl component='fieldset'>
-      <FormLabel component='legend'>Size</FormLabel>
+      <FormLabel component='legend'>Crust</FormLabel>
       <RadioGroup
-        aria-label='sizes'
-        name='sizes'
-        value={size}
+        aria-label='crusts'
+        name='crusts'
+        value={crust}
         onChange={handleChange}
       >
-        {sizesRadio}
+        {crustsRadio}
       </RadioGroup>
     </FormControl>
   );
 };
 
-export default SizeScreen;
+export default CrustScreen;

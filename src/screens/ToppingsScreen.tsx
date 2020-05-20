@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function ToppingsScreen() {
+export default function ToppingsScreen() {
   const classes = useStyles();
   const { toppings, setToppings, size } = useContext(OrderContext);
   const [showError, setShowError] = useState(false);
@@ -77,5 +77,3 @@ function ToppingsScreen() {
     </div>
   );
 }
-
-export default ToppingsScreen;

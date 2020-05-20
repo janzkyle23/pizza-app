@@ -8,7 +8,7 @@ import {
   FormLabel,
 } from '@material-ui/core';
 
-const CrustScreen = () => {
+export default function CrustScreen() {
   const { crust, setCrust, crustPrice } = useContext(OrderContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,5 +40,3 @@ const CrustScreen = () => {
     </FormControl>
   );
 };
-
-export default CrustScreen;

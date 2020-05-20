@@ -5,6 +5,7 @@ import Steps, { steps } from './components/Steps';
 import SizeScreen from './screens/SizeScreen';
 import CrustScreen from './screens/CrustScreen';
 import ToppingsScreen from './screens/ToppingsScreen';
+import SummaryScreen from './screens/SummaryScreen';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +79,7 @@ export const OrderContext = createContext<OrderContextProps>({
   setToppings: (): void => {},
 });
 
-function App() {
+export default function App() {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [size, setSize] = useState<Size | null>(null);
@@ -117,7 +118,7 @@ function App() {
       case 2:
         return <ToppingsScreen />;
       case 3:
-        return 'Confirm your order';
+        return <SummaryScreen />;
       default:
         return 'Unknown stepIndex';
     }
@@ -152,9 +153,7 @@ function App() {
         <Grid item xs={12}>
           {activeStep === steps.length ? (
             <div>
-              <Typography className={classes.instructions}>
-                All steps completed
-              </Typography>
+              <div className={classes.instructions}>All steps completed</div>
               <Button onClick={handleReset}>Order Again</Button>
             </div>
           ) : (
@@ -184,5 +183,3 @@ function App() {
     </OrderContext.Provider>
   );
 }
-
-export default App;

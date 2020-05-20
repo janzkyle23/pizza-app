@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const SizeScreen = () => {
+export default function SizeScreen() {
   const classes = useStyles();
   const { size, setSize, sizePrice } = useContext(OrderContext);
 
@@ -30,7 +30,7 @@ const SizeScreen = () => {
     const newValue = (event.target as HTMLInputElement).value;
     // this validation doesn't follow DRY principle but it conforms with TS type analysis
     if (newValue === 'Small' || newValue === 'Medium' || newValue === 'Large') {
-      setSize(newValue);
+      setSize(newValue!);
     }
   };
 
@@ -57,5 +57,3 @@ const SizeScreen = () => {
     </div>
   );
 };
-
-export default SizeScreen;

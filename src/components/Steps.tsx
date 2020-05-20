@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { OrderContext } from '../App';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,19 +48,20 @@ function getStepContent(stepIndex: number) {
 
 function Steps() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const {activeStep, setActiveStep} = useContext(OrderContext);
+  // const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (setActiveStep) setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    if (setActiveStep) setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
   };
 
   const handleReset = () => {
-    setActiveStep(0);
+    if (setActiveStep) setActiveStep(0);
   };
 
   return (
@@ -82,7 +84,7 @@ function Steps() {
         ) : (
           <div>
             <Typography className={classes.instructions}>
-              {getStepContent(activeStep)}
+              {getStepContent(activeStep || 0)}
             </Typography>
             <div>
               <Button

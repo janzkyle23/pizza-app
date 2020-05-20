@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, createContext } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import Steps from './components/Steps';
 
-type Size = 'Small' | 'Medium' | 'Large';
-type Crust = 'Thin' | 'Thick';
-type Ingredient =
+type Size = null | 'Small' | 'Medium' | 'Large';
+type Crust = null | 'Thin' | 'Thick';
+type Topping =
   | 'Pepperoni'
   | 'Mushrooms'
   | 'Onions'
@@ -15,11 +15,24 @@ type Ingredient =
   | 'Green peppers'
   | 'Pineapple'
   | 'Spinach';
-type Ingredients = {
-  [name in Ingredient]: boolean;
+type Toppings = {
+  [name in Topping]: boolean;
 };
 
-const ingredients: Ingredients = {
+type OrderContextProps = {
+  activeStep: number;
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  size: Size;
+  setSize: React.Dispatch<React.SetStateAction<Size>>;
+  crust: Crust;
+  setCrust: React.Dispatch<React.SetStateAction<Crust>>;
+  toppings: Toppings;
+  setToppings: React.Dispatch<React.SetStateAction<Toppings>>;
+};
+
+export const OrderContext = createContext<Partial<OrderContextProps>>({});
+
+const initialToppings: Toppings = {
   Pepperoni: false,
   Mushrooms: false,
   Onions: false,
@@ -33,16 +46,19 @@ const ingredients: Ingredients = {
 };
 
 function App() {
-  const [size, setSize] = useState<Size | null>(null);
-  const [crust, setCrust] = useState<Crust | null>(null);
-  const [toppings, setTopping] = useState<Ingredients>(ingredients);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [size, setSize] = useState<Size>(null);
+  const [crust, setCrust] = useState<Crust>(null);
+  const [toppings, setTopping] = useState<Toppings>(initialToppings);
 
   return (
     <Grid container>
       <Typography variant='h4' component='h1' align='center' gutterBottom>
         IT'S PIZZA TIME
       </Typography>
-      <Steps />
+      <OrderContext.Provider value={{ activeStep, setActiveStep }}>
+        <Steps />
+      </OrderContext.Provider>
     </Grid>
   );
 }

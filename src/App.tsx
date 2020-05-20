@@ -1,9 +1,25 @@
 import React, { useState, createContext } from 'react';
-import { Grid, Typography } from '@material-ui/core';
-import Steps from './components/Steps';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { Grid, Typography, Button } from '@material-ui/core';
+import Steps, { steps } from './components/Steps';
+import SizeScreen from './screens/SizeScreen';
 
-type Size = null | 'Small' | 'Medium' | 'Large';
-type Crust = null | 'Thin' | 'Thick';
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    backButton: {
+      marginRight: theme.spacing(1),
+    },
+    instructions: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      margin: theme.spacing(1),
+    },
+  })
+);
+
+type Size = 'Small' | 'Medium' | 'Large';
+type Crust = 'Thin' | 'Thick';
 type Topping =
   | 'Pepperoni'
   | 'Mushrooms'
@@ -18,20 +34,21 @@ type Topping =
 type Toppings = {
   [name in Topping]: boolean;
 };
-
 type OrderContextProps = {
   activeStep: number;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-  size: Size;
-  setSize: React.Dispatch<React.SetStateAction<Size>>;
-  crust: Crust;
-  setCrust: React.Dispatch<React.SetStateAction<Crust>>;
+  size: Size | null;
+  setSize: React.Dispatch<React.SetStateAction<Size | null>>;
+  sizePrice: { [name in Size]: number };
+  crust: Crust | null;
+  setCrust: React.Dispatch<React.SetStateAction<Crust | null>>;
+  crustPrice: { [name in Crust]: number };
   toppings: Toppings;
   setToppings: React.Dispatch<React.SetStateAction<Toppings>>;
 };
 
-export const OrderContext = createContext<Partial<OrderContextProps>>({});
-
+const sizePrice = { Small: 8, Medium: 10, Large: 12 };
+const crustPrice = { Thin: 2, Thick: 4 };
 const initialToppings: Toppings = {
   Pepperoni: false,
   Mushrooms: false,
@@ -45,21 +62,110 @@ const initialToppings: Toppings = {
   Spinach: false,
 };
 
+// declaring the global state. It is partial so that the default value can be omitted
+export const OrderContext = createContext<OrderContextProps>({
+  activeStep: 0,
+  setActiveStep: (): void => {},
+  size: null,
+  setSize: (): void => {},
+  sizePrice,
+  crust: null,
+  setCrust: (): void => {},
+  crustPrice,
+  toppings: initialToppings,
+  setToppings: (): void => {},
+});
+
 function App() {
+  const classes = useStyles();
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [size, setSize] = useState<Size>(null);
-  const [crust, setCrust] = useState<Crust>(null);
-  const [toppings, setTopping] = useState<Toppings>(initialToppings);
+  const [size, setSize] = useState<Size | null>(null);
+  const [crust, setCrust] = useState<Crust | null>(null);
+  const [toppings, setToppings] = useState<Toppings>(initialToppings);
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
+  const getStepContent = (stepIndex: number) => {
+    switch (stepIndex) {
+      case 0:
+        return <SizeScreen />;
+      case 1:
+        return <SizeScreen />;
+      case 2:
+        return <SizeScreen />;
+      case 3:
+        return 'Confirm your order';
+      default:
+        return 'Unknown stepIndex';
+    }
+  };
 
   return (
-    <Grid container>
-      <Typography variant='h4' component='h1' align='center' gutterBottom>
-        IT'S PIZZA TIME
-      </Typography>
-      <OrderContext.Provider value={{ activeStep, setActiveStep }}>
+    <OrderContext.Provider
+      value={{
+        activeStep,
+        setActiveStep,
+        size,
+        setSize,
+        sizePrice,
+        crust,
+        setCrust,
+        crustPrice,
+        toppings,
+        setToppings,
+      }}
+    >
+      <Grid container>
+        <Typography variant='h4' component='h1' align='center' gutterBottom>
+          IT'S PIZZA TIME
+        </Typography>
+
         <Steps />
-      </OrderContext.Provider>
-    </Grid>
+
+        <Grid item xs={12}>
+          {activeStep === steps.length ? (
+            <div>
+              <Typography className={classes.instructions}>
+                All steps completed
+              </Typography>
+              <Button onClick={handleReset}>Order Again</Button>
+            </div>
+          ) : (
+            <div>
+              <div className={classes.instructions}>
+                {getStepContent(activeStep)}
+              </div>
+              <div>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  className={classes.backButton}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleNext}
+                >
+                  {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </Grid>
+      </Grid>
+    </OrderContext.Provider>
   );
 }
 

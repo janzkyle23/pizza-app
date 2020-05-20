@@ -3,8 +3,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import { OrderContext } from '../App';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,47 +20,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function getSteps() {
-  return [
-    'Choose a pizza size',
-    'Choose a crust type',
-    'Pick your toppings',
-    'Confirm your order'
-  ];
-}
-
-function getStepContent(stepIndex: number) {
-  switch (stepIndex) {
-    case 0:
-      return 'Choose a pizza size';
-    case 1:
-      return 'Choose a crust type';
-    case 2:
-      return 'Pick your toppings';
-    case 3:
-      return 'Confirm your order';
-    default:
-      return 'Unknown stepIndex';
-  }
-}
+export const steps = [
+  'Choose a pizza size',
+  'Choose a crust type',
+  'Pick your toppings',
+  'Confirm your order',
+];
 
 function Steps() {
   const classes = useStyles();
-  const {activeStep, setActiveStep} = useContext(OrderContext);
-  // const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
-
-  const handleNext = () => {
-    if (setActiveStep) setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    if (setActiveStep) setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    if (setActiveStep) setActiveStep(0);
-  };
+  const { activeStep } = useContext(OrderContext);
 
   return (
     <div className={classes.root}>
@@ -73,34 +40,6 @@ function Steps() {
           </Step>
         ))}
       </Stepper>
-      <div>
-        {activeStep === steps.length ? (
-          <div>
-            <Typography className={classes.instructions}>
-              All steps completed
-            </Typography>
-            <Button onClick={handleReset}>Reset</Button>
-          </div>
-        ) : (
-          <div>
-            <Typography className={classes.instructions}>
-              {getStepContent(activeStep || 0)}
-            </Typography>
-            <div>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.backButton}
-              >
-                Back
-              </Button>
-              <Button variant='contained' color='primary' onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

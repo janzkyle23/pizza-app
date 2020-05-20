@@ -16,9 +16,6 @@ const SizeScreen = () => {
     // this validation doesn't follow DRY principle but it conforms with TS type analysis
     if (newValue === 'Small' || newValue === 'Medium' || newValue === 'Large') {
       setSize(newValue);
-    } else {
-      console.error('size input error');
-      setSize(null);
     }
   };
 
@@ -31,7 +28,7 @@ const SizeScreen = () => {
 
   return (
     <FormControl component='fieldset'>
-      <FormLabel component='legend'>Size</FormLabel>
+      <FormLabel component='legend'>Choose pizza size</FormLabel>
       <RadioGroup
         aria-label='sizes'
         name='sizes'

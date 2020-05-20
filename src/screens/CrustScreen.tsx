@@ -16,9 +16,6 @@ const CrustScreen = () => {
     // this validation doesn't follow DRY principle but it conforms with TS type analysis
     if (newValue === 'Thin' || newValue === 'Thick') {
       setCrust(newValue);
-    } else {
-      console.error('crust input error');
-      setCrust(null);
     }
   };
 
@@ -31,7 +28,7 @@ const CrustScreen = () => {
 
   return (
     <FormControl component='fieldset'>
-      <FormLabel component='legend'>Crust</FormLabel>
+      <FormLabel component='legend'>Choose crust type</FormLabel>
       <RadioGroup
         aria-label='crusts'
         name='crusts'

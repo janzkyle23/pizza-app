@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const steps = [
-  'Choose a pizza size',
-  'Choose a crust type',
+  'Choose pizza size',
+  'Choose crust type',
   'Pick your toppings',
   'Confirm your order',
 ];

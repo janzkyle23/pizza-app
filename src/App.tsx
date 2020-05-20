@@ -4,6 +4,7 @@ import { Grid, Typography, Button } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
 import SizeScreen from './screens/SizeScreen';
 import CrustScreen from './screens/CrustScreen';
+import ToppingsScreen from './screens/ToppingsScreen';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -114,7 +115,7 @@ function App() {
       case 1:
         return <CrustScreen />;
       case 2:
-        return <SizeScreen />;
+        return <ToppingsScreen />;
       case 3:
         return 'Confirm your order';
       default:

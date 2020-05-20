@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
@@ -122,6 +122,10 @@ function App() {
         return 'Unknown stepIndex';
     }
   };
+  // reset chosen toppings when size changes to avoid exceeding max toppings per size
+  useEffect(() => {
+    setToppings(initialToppings);
+  }, [size]);
 
   return (
     <OrderContext.Provider

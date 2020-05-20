@@ -6,9 +6,24 @@ import {
   FormControlLabel,
   FormControl,
   FormLabel,
+  makeStyles,
+  Theme,
+  createStyles,
 } from '@material-ui/core';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+    },
+    formControl: {
+      margin: theme.spacing(3),
+    },
+  })
+);
+
 const SizeScreen = () => {
+  const classes = useStyles();
   const { size, setSize, sizePrice } = useContext(OrderContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,17 +42,19 @@ const SizeScreen = () => {
   ));
 
   return (
-    <FormControl component='fieldset'>
-      <FormLabel component='legend'>Choose pizza size</FormLabel>
-      <RadioGroup
-        aria-label='sizes'
-        name='sizes'
-        value={size}
-        onChange={handleChange}
-      >
-        {sizesRadio}
-      </RadioGroup>
-    </FormControl>
+    <div className={classes.root}>
+      <FormControl component='fieldset' className={classes.formControl}>
+        <FormLabel component='legend'>Choose pizza size</FormLabel>
+        <RadioGroup
+          aria-label='sizes'
+          name='sizes'
+          value={size}
+          onChange={handleChange}
+        >
+          {sizesRadio}
+        </RadioGroup>
+      </FormControl>
+    </div>
   );
 };
 

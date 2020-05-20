@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -19,12 +19,33 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function CheckboxesGroup() {
+function ToppingsScreen() {
   const classes = useStyles();
-  const { toppings, setToppings } = useContext(OrderContext);
+  const { toppings, setToppings, size } = useContext(OrderContext);
+  const [showError, setShowError] = useState(false);
+
+  const maxToppings = {
+    Small: 5,
+    Medium: 7,
+    Large: 9,
+  };
+  // size should be checked as truthy because its type includes null
+  const errorMsg =
+    size &&
+    `You can only choose up to ${
+      maxToppings[size]
+    } toppings for a ${size.toLowerCase()} pizza`;
+
+  const toppingsCount = Object.values(toppings).filter((v) => v).length;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setToppings({ ...toppings, [event.target.name]: event.target.checked });
+    const isChecked = event.target.checked;
+    if (isChecked && size && toppingsCount >= maxToppings[size]) {
+      setShowError(true);
+    } else {
+      setToppings({ ...toppings, [event.target.name]: event.target.checked });
+      if (showError) setShowError(false);
+    }
   };
 
   const toppingsCheckbox = Object.entries(toppings).map(([key, value]) => (
@@ -40,14 +61,21 @@ export default function CheckboxesGroup() {
 
   return (
     <div className={classes.root}>
-      <FormControl component='fieldset' className={classes.formControl}>
+      <FormControl
+        error={showError}
+        component='fieldset'
+        className={classes.formControl}
+      >
         <FormLabel component='legend'>Pick your toppings</FormLabel>
-        <FormGroup>{toppingsCheckbox}</FormGroup>
         <FormHelperText>
           You may choose up to 3 toppings for free. Each additional topping
           costs $0.50
         </FormHelperText>
+        <FormGroup>{toppingsCheckbox}</FormGroup>
+        {showError && <FormHelperText>{errorMsg}</FormHelperText>}
       </FormControl>
     </div>
   );
 }
+
+export default ToppingsScreen;

@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import { OrderContext } from '../App';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formControl: {
       margin: theme.spacing(3),
+    },
+    formGroup: {
+      flexDirection: 'row',
     },
   })
 );
@@ -32,9 +36,9 @@ export default function ToppingsScreen() {
   // size should be checked as truthy because its type includes null
   const errorMsg =
     size &&
-    `You can only choose up to ${
+    `A maximum of ${
       maxToppings[size]
-    } toppings for a ${size.toLowerCase()} pizza`;
+    } toppings are allowed for a ${size.toLowerCase()} pizza`;
 
   const toppingsCount = Object.values(toppings).filter((v) => v).length;
 
@@ -49,31 +53,25 @@ export default function ToppingsScreen() {
   };
 
   const toppingsCheckbox = Object.entries(toppings).map(([key, value]) => (
-    <div key={key}>
+    <Grid item xs={12} md={6} key={key}>
       <FormControlLabel
         control={
           <Checkbox checked={value} onChange={handleChange} name={key} />
         }
         label={key}
       />
-    </div>
+    </Grid>
   ));
 
   return (
-    <div className={classes.root}>
-      <FormControl
-        error={showError}
-        component='fieldset'
-        className={classes.formControl}
-      >
-        <FormLabel component='legend'>Pick your toppings</FormLabel>
-        <FormHelperText>
-          You may choose up to 3 toppings for free. Each additional topping
-          costs $0.50
-        </FormHelperText>
-        <FormGroup>{toppingsCheckbox}</FormGroup>
-        {showError && <FormHelperText>{errorMsg}</FormHelperText>}
-      </FormControl>
-    </div>
+    <FormControl component='fieldset' className={classes.formControl}>
+      <FormLabel component='legend'>Pick your toppings</FormLabel>
+      <FormHelperText>
+        You may choose up to 3 toppings for free! Each additional topping costs
+        $0.50
+      </FormHelperText>
+      {showError && <FormHelperText error>{errorMsg}</FormHelperText>}
+      <FormGroup className={classes.formGroup}>{toppingsCheckbox}</FormGroup>
+    </FormControl>
   );
 }

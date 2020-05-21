@@ -13,9 +13,6 @@ import {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
     formControl: {
       margin: theme.spacing(3),
     },
@@ -35,25 +32,25 @@ export default function SizeScreen() {
   };
 
   const sizesRadio = Object.entries(sizePrice).map(([key, value]) => (
-    <div key={key}>
-      <FormControlLabel value={key} control={<Radio />} label={key} />
-      {value}
-    </div>
+    <FormControlLabel
+      value={key}
+      key={key}
+      control={<Radio />}
+      label={`${key} - $${value}`}
+    />
   ));
 
   return (
-    <div className={classes.root}>
-      <FormControl component='fieldset' className={classes.formControl}>
-        <FormLabel component='legend'>Choose pizza size</FormLabel>
-        <RadioGroup
-          aria-label='sizes'
-          name='sizes'
-          value={size}
-          onChange={handleChange}
-        >
-          {sizesRadio}
-        </RadioGroup>
-      </FormControl>
-    </div>
+    <FormControl component='fieldset' className={classes.formControl}>
+      <FormLabel component='legend'>Choose pizza size</FormLabel>
+      <RadioGroup
+        aria-label='sizes'
+        name='sizes'
+        value={size}
+        onChange={handleChange}
+      >
+        {sizesRadio}
+      </RadioGroup>
+    </FormControl>
   );
-};
+}

@@ -1,6 +1,6 @@
 import React, { useState, createContext, useEffect, useRef } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Container, Typography, Button } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
 import SizeScreen from './screens/SizeScreen';
 import CrustScreen from './screens/CrustScreen';
@@ -9,6 +9,20 @@ import SummaryScreen from './screens/SummaryScreen';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    title: {
+      margin: theme.spacing(2, 0),
+    },
+    form: {
+      padding: theme.spacing(0, 3)
+    },
+    buttons: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+    },
     backButton: {
       marginRight: theme.spacing(1),
     },
@@ -153,54 +167,55 @@ export default function App() {
         setToppings,
       }}
     >
-      <Grid container>
-        <Typography variant='h4' component='h1' align='center' gutterBottom>
+      <Container maxWidth='md' className={classes.root}>
+        <Typography
+          variant='h4'
+          component='h1'
+          align='center'
+          className={classes.title}
+        >
           IT'S PIZZA TIME
         </Typography>
-
         <Steps />
-
-        <Grid item xs={12}>
-          {activeStep === steps.length ? (
-            <div>
-              <div className={classes.instructions}>All steps completed</div>
-              <Button onClick={handleReset}>Order Again</Button>
-            </div>
-          ) : (
-            <div>
-              <div className={classes.instructions}>{getStepContent()}</div>
-              <div>
+        {activeStep === steps.length ? (
+          <div>
+            <div className={classes.instructions}>All steps completed</div>
+            <Button onClick={handleReset}>Order Again</Button>
+          </div>
+        ) : (
+          <div className={classes.form}>
+            <div className={classes.instructions}>{getStepContent()}</div>
+            <div className={classes.buttons}>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={classes.backButton}
+              >
+                Back
+              </Button>
+              {activeStep === steps.length - 1 ? (
                 <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className={classes.backButton}
+                  variant='contained'
+                  color='primary'
+                  onClick={handleNext}
+                  disabled={!size || !crust}
                 >
-                  Back
+                  Confirm
                 </Button>
-                {activeStep === steps.length - 1 ? (
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleNext}
-                    disabled={!size || !crust}
-                  >
-                    Confirm
-                  </Button>
-                ) : (
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleNext}
-                    disabled={handleNextDisable()}
-                  >
-                    Next
-                  </Button>
-                )}
-              </div>
+              ) : (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleNext}
+                  disabled={handleNextDisable()}
+                >
+                  Next
+                </Button>
+              )}
             </div>
-          )}
-        </Grid>
-      </Grid>
+          </div>
+        )}
+      </Container>
     </OrderContext.Provider>
   );
 }

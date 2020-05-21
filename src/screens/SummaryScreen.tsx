@@ -8,11 +8,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import clsx from 'clsx';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    table: {
-      minWidth: 600,
+    root: {
+      margin: theme.spacing(3, 0),
     },
     noBorderBottom: {
       borderBottom: 'none',
@@ -41,7 +42,7 @@ export default function SummaryScreen() {
     const isBottom = index === toppingsCount - 1;
     if (index === 0) {
       return (
-        <TableRow>
+        <TableRow key={topping}>
           <TableCell className={clsx(!isBottom && classes.noBorderBottom)}>
             Toppings
           </TableCell>
@@ -58,7 +59,7 @@ export default function SummaryScreen() {
       );
     } else {
       return (
-        <TableRow>
+        <TableRow key={topping}>
           {index === 1 && <TableCell rowSpan={toppingsCount - 1} />}
           <TableCell
             className={clsx(!isBottom && classes.noBorderBottom)}
@@ -72,9 +73,11 @@ export default function SummaryScreen() {
   });
 
   return (
-    <div>
-      <Typography component='h2' variant='h6' align='center'>Order Summary</Typography>
-      <Table className={classes.table} aria-label='spanning table'>
+    <Grid item xs={12} className={classes.root}>
+      <Typography component='h2' variant='h6' align='center'>
+        Order Summary
+      </Typography>
+      <Table size='small'>
         <TableHead>
           <TableRow>
             <TableCell colSpan={2}>Details</TableCell>
@@ -110,6 +113,6 @@ export default function SummaryScreen() {
           </TableRow>
         </TableBody>
       </Table>
-    </div>
+    </Grid>
   );
 }

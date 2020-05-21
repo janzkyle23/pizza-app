@@ -6,9 +6,21 @@ import {
   FormControlLabel,
   FormControl,
   FormLabel,
+  makeStyles,
+  Theme,
+  createStyles,
 } from '@material-ui/core';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formControl: {
+      margin: theme.spacing(3),
+    },
+  })
+);
+
 export default function CrustScreen() {
+  const classes = useStyles();
   const { crust, setCrust, crustPrice } = useContext(OrderContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,14 +32,16 @@ export default function CrustScreen() {
   };
 
   const crustsRadio = Object.entries(crustPrice).map(([key, value]) => (
-    <div key={key}>
-      <FormControlLabel value={key} control={<Radio />} label={key} />
-      {value}
-    </div>
+    <FormControlLabel
+      value={key}
+      key={key}
+      control={<Radio />}
+      label={`${key} - $${value}`}
+    />
   ));
 
   return (
-    <FormControl component='fieldset'>
+    <FormControl component='fieldset' className={classes.formControl}>
       <FormLabel component='legend'>Choose crust type</FormLabel>
       <RadioGroup
         aria-label='crusts'
@@ -39,4 +53,4 @@ export default function CrustScreen() {
       </RadioGroup>
     </FormControl>
   );
-};
+}

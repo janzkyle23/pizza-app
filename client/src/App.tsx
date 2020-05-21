@@ -106,6 +106,13 @@ export default function App() {
   const [hasConfirmed, sethasConfirmed] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
 
+  const toppingsSelected: string[] = [];
+  Object.entries(toppings).forEach(([topping, isSelected]) => {
+    if (isSelected) {
+      toppingsSelected.push(topping);
+    }
+  });
+
   const handleNext = () => {
     setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
   };
@@ -126,7 +133,24 @@ export default function App() {
     }
   };
   const handleConfirmDisable = () => hasConfirmed || !size || !crust;
-  const handleConfirm = () => {setOpenBackdrop(true)};
+  const handleConfirm = () => {
+    setOpenBackdrop(true);
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ size, crust, toppings: toppingsSelected }),
+    }).then((res) => {
+      if (res.ok) {
+        console.log('NOICE');
+      } else {
+        console.log('AWIT');
+      }
+      setOpenBackdrop(false);
+    });
+  };
 
   const getStepContent = () => {
     switch (activeStep) {

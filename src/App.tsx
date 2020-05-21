@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       display: 'flex',
       justifyContent: 'center',
-      margin: theme.spacing(1),
     },
   })
 );

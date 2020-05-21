@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from 'react';
+import React, { useState, createContext, useEffect, useRef } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Grid, Typography, Button } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
@@ -120,13 +120,24 @@ export default function App() {
       case 3:
         return <SummaryScreen />;
       default:
-        return 'Unknown stepIndex';
+        return <React.Fragment />;
     }
   };
   // reset chosen toppings when size changes to avoid exceeding max toppings per size
   useEffect(() => {
     setToppings(initialToppings);
   }, [size]);
+  // automatic step increment after choosing a size or crust
+  const isFirstUpdate = useRef(true);
+  useEffect(() => {
+    if (isFirstUpdate.current) {
+      isFirstUpdate.current = false;
+    } else {
+      setTimeout(() => {
+        handleNext();
+      }, 100);
+    }
+  }, [size, crust]);
 
   return (
     <OrderContext.Provider
@@ -167,14 +178,25 @@ export default function App() {
                 >
                   Back
                 </Button>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={handleNext}
-                  disabled={handleNextDisable()}
-                >
-                  {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
-                </Button>
+                {activeStep === steps.length - 1 ? (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={handleNext}
+                    disabled={!size || !crust}
+                  >
+                    Confirm
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={handleNext}
+                    disabled={handleNextDisable()}
+                  >
+                    Next
+                  </Button>
+                )}
               </div>
             </div>
           )}

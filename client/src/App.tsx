@@ -83,7 +83,7 @@ const initialToppings: Toppings = {
   Spinach: false,
 };
 
-// declaring the global state. It is partial so that the default value can be omitted
+// declaring the global state
 export const OrderContext = createContext<OrderContextProps>({
   activeStep: 0,
   setActiveStep: (): void => {},

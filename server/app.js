@@ -15,8 +15,7 @@ mongoose
   .then(() => console.log('MongoDb connected'))
   .catch((err) => console.log(err));
 
-// api endpoints
-app.get('/', (req, res) => res.send('Hello World!'));
+// api endpoint
 app.use('/api/orders', orders);
 
 const port = process.env.PORT || 3001;

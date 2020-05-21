@@ -1,7 +1,8 @@
 import React, { useState, createContext, useEffect, useRef } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { Container, Typography, Button } from '@material-ui/core';
+import { Container, Typography, Button, Backdrop } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
+import Loader from './components/Loader';
 import SizeScreen from './screens/SizeScreen';
 import CrustScreen from './screens/CrustScreen';
 import ToppingsScreen from './screens/ToppingsScreen';
@@ -30,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       display: 'flex',
       justifyContent: 'center',
+    },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
     },
   })
 );
@@ -98,19 +103,18 @@ export default function App() {
   const [size, setSize] = useState<Size | null>(null);
   const [crust, setCrust] = useState<Crust | null>(null);
   const [toppings, setToppings] = useState<Toppings>(initialToppings);
+  const [hasConfirmed, sethasConfirmed] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
   };
-
   const handleReset = () => {
     setActiveStep(0);
   };
-
   const handleNextDisable = () => {
     switch (activeStep) {
       case 0:
@@ -121,6 +125,8 @@ export default function App() {
         return false;
     }
   };
+  const handleConfirmDisable = () => hasConfirmed || !size || !crust;
+  const handleConfirm = () => {setOpenBackdrop(true)};
 
   const getStepContent = () => {
     switch (activeStep) {
@@ -204,8 +210,8 @@ export default function App() {
                   <Button
                     variant='contained'
                     color='primary'
-                    onClick={handleNext}
-                    disabled={!size || !crust}
+                    onClick={handleConfirm}
+                    disabled={handleConfirmDisable()}
                   >
                     Confirm
                   </Button>
@@ -223,6 +229,9 @@ export default function App() {
             </>
           )}
         </div>
+        <Backdrop className={classes.backdrop} open={openBackdrop}>
+          <Loader />
+        </Backdrop>
       </Container>
     </OrderContext.Provider>
   );

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2, 0),
     },
     form: {
-      padding: theme.spacing(0, 3)
+      padding: theme.spacing(0, 3),
     },
     buttons: {
       display: 'flex',
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     backButton: {
       marginRight: theme.spacing(1),
     },
-    instructions: {
+    screen: {
       width: '100%',
       display: 'flex',
       justifyContent: 'center',
@@ -177,44 +177,52 @@ export default function App() {
           IT'S PIZZA TIME
         </Typography>
         <Steps />
-        {activeStep === steps.length ? (
-          <div>
-            <div className={classes.instructions}>All steps completed</div>
-            <Button onClick={handleReset}>Order Again</Button>
-          </div>
-        ) : (
-          <div className={classes.form}>
-            <div className={classes.instructions}>{getStepContent()}</div>
-            <div className={classes.buttons}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.backButton}
-              >
-                Back
+        <div className={classes.form}>
+          {activeStep === steps.length ? (
+            <>
+              <div className={classes.screen}>
+                <Typography component='h2' variant='h6'>
+                  Your order has been received!
+                </Typography>
+              </div>
+              <Button variant='outlined' onClick={handleReset}>
+                Order Again
               </Button>
-              {activeStep === steps.length - 1 ? (
+            </>
+          ) : (
+            <>
+              <div className={classes.screen}>{getStepContent()}</div>
+              <div className={classes.buttons}>
                 <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={handleNext}
-                  disabled={!size || !crust}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  className={classes.backButton}
                 >
-                  Confirm
+                  Back
                 </Button>
-              ) : (
-                <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={handleNext}
-                  disabled={handleNextDisable()}
-                >
-                  Next
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
+                {activeStep === steps.length - 1 ? (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={handleNext}
+                    disabled={!size || !crust}
+                  >
+                    Confirm
+                  </Button>
+                ) : (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={handleNext}
+                    disabled={handleNextDisable()}
+                  >
+                    Next
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </Container>
     </OrderContext.Provider>
   );

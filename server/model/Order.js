@@ -7,13 +7,19 @@ const orderSchema = new Schema({
   size: {
     type: String,
     enum: ['Small', 'Medium', 'Large'],
+    required: true,
   },
   crust: {
     type: String,
     enum: ['Thin', 'Thick'],
+    required: true,
   },
   toppings: [String],
-  amount: Number,
+  amount: {
+    type: Number,
+    required: true,
+  },
+  date: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+// parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 //set up Mongoose connection
 // const mongoDB = 'mongodb://127.0.0.1/pizza_test';
 const mongoDB = require('./config/keys_dev.js').mongoURI;

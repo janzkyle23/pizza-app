@@ -1,13 +1,39 @@
 const express = require('express');
 const router = express.Router();
 
-router.use(function timeLog (req, res, next) {
-  console.log('Time: ', Date.now())
-  next()
-})
+const Order = require('../model/Order');
 
-router.get('/', (req, res) => res.json({ msg: 'GET Hello World!' }));
+router.use(function timeLog(req, res, next) {
+  console.log('Time: ', Date.now());
+  next();
+});
 
-router.post('/', (req, res) => res.json({ msg: 'POST Hello World!' }));
+router.get('/', (req, res) => {
+  Order.find((err, orders) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+    res.json(orders);
+  });
+});
 
-module.exports = router
+router.post('/', (req, res) => {
+  const newOrder = new Order({
+    size: 'Small',
+    crust: 'Thin',
+    toppings: ['Pepperoni', 'Mushrooms', 'Sausage', 'Extra cheese'],
+    total: 13,
+  });
+
+  newOrder.save((err) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+  });
+
+  res.sendStatus(200);
+});
+
+module.exports = router;

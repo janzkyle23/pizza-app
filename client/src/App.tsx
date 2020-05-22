@@ -3,6 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Container, Typography, Button, Backdrop } from '@material-ui/core';
 import Steps, { steps } from './components/Steps';
 import Loader from './components/Loader';
+import Modal from './components/Modal';
 import SizeScreen from './screens/SizeScreen';
 import CrustScreen from './screens/CrustScreen';
 import ToppingsScreen from './screens/ToppingsScreen';
@@ -103,8 +104,9 @@ export default function App() {
   const [size, setSize] = useState<Size | null>(null);
   const [crust, setCrust] = useState<Crust | null>(null);
   const [toppings, setToppings] = useState<Toppings>(initialToppings);
-  const [hasConfirmed, sethasConfirmed] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const toppingsSelected: string[] = [];
   Object.entries(toppings).forEach(([topping, isSelected]) => {
@@ -119,9 +121,7 @@ export default function App() {
   const handleBack = () => {
     setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
   };
-  const handleReset = () => {
-    setActiveStep(0);
-  };
+
   const handleNextDisable = () => {
     switch (activeStep) {
       case 0:
@@ -132,7 +132,7 @@ export default function App() {
         return false;
     }
   };
-  const handleConfirmDisable = () => hasConfirmed || !size || !crust;
+  const handleConfirmDisable = () => isConfirmed || !size || !crust;
   const handleConfirm = () => {
     setOpenBackdrop(true);
     fetch('/api/orders', {
@@ -144,11 +144,10 @@ export default function App() {
       body: JSON.stringify({ size, crust, toppings: toppingsSelected }),
     }).then((res) => {
       if (res.ok) {
-        console.log('NOICE');
-      } else {
-        console.log('AWIT');
+        setIsConfirmed(true);
       }
       setOpenBackdrop(false);
+      setOpenModal(true);
     });
   };
 
@@ -166,10 +165,12 @@ export default function App() {
         return <React.Fragment />;
     }
   };
+
   // reset chosen toppings when size changes to avoid exceeding max toppings per size
   useEffect(() => {
     setToppings(initialToppings);
   }, [size]);
+
   // automatic step increment after choosing a size or crust
   const isFirstUpdate = useRef(true);
   useEffect(() => {
@@ -208,54 +209,47 @@ export default function App() {
         </Typography>
         <Steps />
         <div className={classes.form}>
-          {activeStep === steps.length ? (
-            <>
-              <div className={classes.screen}>
-                <Typography component='h2' variant='h6'>
-                  Your order has been received!
-                </Typography>
-              </div>
-              <Button variant='outlined' onClick={handleReset}>
-                Order Again
+          <div className={classes.screen}>{getStepContent()}</div>
+          <div className={classes.buttons}>
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              className={classes.backButton}
+            >
+              Back
+            </Button>
+            {activeStep === steps.length - 1 ? (
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={handleConfirm}
+                disabled={handleConfirmDisable()}
+              >
+                Confirm
               </Button>
-            </>
-          ) : (
-            <>
-              <div className={classes.screen}>{getStepContent()}</div>
-              <div className={classes.buttons}>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className={classes.backButton}
-                >
-                  Back
-                </Button>
-                {activeStep === steps.length - 1 ? (
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleConfirm}
-                    disabled={handleConfirmDisable()}
-                  >
-                    Confirm
-                  </Button>
-                ) : (
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleNext}
-                    disabled={handleNextDisable()}
-                  >
-                    Next
-                  </Button>
-                )}
-              </div>
-            </>
-          )}
+            ) : (
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={handleNext}
+                disabled={handleNextDisable()}
+              >
+                Next
+              </Button>
+            )}
+          </div>
         </div>
         <Backdrop className={classes.backdrop} open={openBackdrop}>
           <Loader />
         </Backdrop>
+        {openModal && (
+          <Modal
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            isConfirmed={isConfirmed}
+            setIsConfirmed={setIsConfirmed}
+          />
+        )}
       </Container>
     </OrderContext.Provider>
   );

@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect, useRef } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Container, Typography, Button, Backdrop } from '@material-ui/core';
+import { Size, Crust, Toppings, OrderContextProps } from './types';
 import Steps, { steps } from './components/Steps';
 import Loader from './components/Loader';
 import Modal from './components/Modal';
@@ -39,35 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-type Size = 'Small' | 'Medium' | 'Large';
-type Crust = 'Thin' | 'Thick';
-type Topping =
-  | 'Pepperoni'
-  | 'Mushrooms'
-  | 'Onions'
-  | 'Sausage'
-  | 'Bacon'
-  | 'Extra cheese'
-  | 'Black olives'
-  | 'Green peppers'
-  | 'Pineapple'
-  | 'Spinach';
-type Toppings = {
-  [name in Topping]: boolean;
-};
-type OrderContextProps = {
-  activeStep: number;
-  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-  size: Size | null;
-  setSize: React.Dispatch<React.SetStateAction<Size | null>>;
-  sizePrice: { [name in Size]: number };
-  crust: Crust | null;
-  setCrust: React.Dispatch<React.SetStateAction<Crust | null>>;
-  crustPrice: { [name in Crust]: number };
-  toppings: Toppings;
-  setToppings: React.Dispatch<React.SetStateAction<Toppings>>;
-};
 
 const sizePrice = { Small: 8, Medium: 10, Large: 12 };
 const crustPrice = { Thin: 2, Thick: 4 };
@@ -115,14 +87,13 @@ export default function App() {
     }
   });
 
-  const handleNext = () => {
+  const nextScreen = () => {
     setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
   };
-  const handleBack = () => {
+  const prevScreen = () => {
     setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
   };
-
-  const handleNextDisable = () => {
+  const nextButtonDisable = () => {
     switch (activeStep) {
       case 0:
         return !size;
@@ -132,8 +103,9 @@ export default function App() {
         return false;
     }
   };
-  const handleConfirmDisable = () => isConfirmed || !size || !crust;
-  const handleConfirm = () => {
+  const confirmButtonDisable = () => isConfirmed || !size || !crust;
+
+  const confirmOrder = () => {
     setOpenBackdrop(true);
     fetch('/api/orders', {
       method: 'POST',
@@ -151,7 +123,25 @@ export default function App() {
     });
   };
 
-  const getStepContent = () => {
+  // reset chosen toppings when size changes to avoid exceeding max toppings per size
+  useEffect(() => {
+    setToppings(initialToppings);
+  }, [size]);
+
+  // automatic step increment after choosing a size or crust
+  const isFirstUpdate = useRef(true);
+  useEffect(() => {
+    if (isFirstUpdate.current) {
+      isFirstUpdate.current = false;
+    } else {
+      setTimeout(() => {
+        nextScreen();
+      }, 100);
+    }
+  }, [size, crust]);
+
+
+  const renderScreen = () => {
     switch (activeStep) {
       case 0:
         return <SizeScreen />;
@@ -165,23 +155,6 @@ export default function App() {
         return <React.Fragment />;
     }
   };
-
-  // reset chosen toppings when size changes to avoid exceeding max toppings per size
-  useEffect(() => {
-    setToppings(initialToppings);
-  }, [size]);
-
-  // automatic step increment after choosing a size or crust
-  const isFirstUpdate = useRef(true);
-  useEffect(() => {
-    if (isFirstUpdate.current) {
-      isFirstUpdate.current = false;
-    } else {
-      setTimeout(() => {
-        handleNext();
-      }, 100);
-    }
-  }, [size, crust]);
 
   return (
     <OrderContext.Provider
@@ -209,11 +182,11 @@ export default function App() {
         </Typography>
         <Steps />
         <div className={classes.form}>
-          <div className={classes.screen}>{getStepContent()}</div>
+          <div className={classes.screen}>{renderScreen()}</div>
           <div className={classes.buttons}>
             <Button
               disabled={activeStep === 0}
-              onClick={handleBack}
+              onClick={prevScreen}
               className={classes.backButton}
             >
               Back
@@ -222,8 +195,8 @@ export default function App() {
               <Button
                 variant='contained'
                 color='primary'
-                onClick={handleConfirm}
-                disabled={handleConfirmDisable()}
+                onClick={confirmOrder}
+                disabled={confirmButtonDisable()}
               >
                 Confirm
               </Button>
@@ -231,8 +204,8 @@ export default function App() {
               <Button
                 variant='contained'
                 color='primary'
-                onClick={handleNext}
-                disabled={handleNextDisable()}
+                onClick={nextScreen}
+                disabled={nextButtonDisable()}
               >
                 Next
               </Button>

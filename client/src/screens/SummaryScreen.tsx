@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import clsx from 'clsx';
 import { Grid } from '@material-ui/core';
+import RecentOrders from '../components/RecentOrders';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,6 +75,7 @@ export default function SummaryScreen() {
 
   return (
     <Grid item xs={12} className={classes.root}>
+      <RecentOrders />
       <Typography component='h2' variant='h6' align='center'>
         Order Summary
       </Typography>

@@ -140,7 +140,6 @@ export default function App() {
     }
   }, [size, crust]);
 
-
   const renderScreen = () => {
     switch (activeStep) {
       case 0:

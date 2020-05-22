@@ -5,10 +5,10 @@
   "author": "Kyle Ordona",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.9.15",
-    "nodemon": "^2.0.4"
+    "mongoose": "^5.9.15"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   }
 }

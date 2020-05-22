@@ -9,7 +9,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //set up Mongoose connection
-const mongoDB = 'mongodb://mongo:27017/pizza-dev';
+const mongoDB =
+  process.env.NODE_ENV === 'production'
+    ? process.env.mongoURI
+    : 'mongodb://mongo:27017/pizza-dev';
 mongoose
   .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDb connected'))

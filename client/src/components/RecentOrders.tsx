@@ -11,6 +11,7 @@ import {
   ListItemText,
   List,
   DialogContent,
+  Typography,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,7 +47,7 @@ export default function RecentOrders() {
   };
 
   useEffect(() => {
-    fetch('/api/orders')
+    fetch('https://pizza-app-server.herokuapp.com/api/orders')
       .then((res) => res.json())
       .then(
         (result) => setRecentOrders(result),
@@ -77,13 +78,15 @@ export default function RecentOrders() {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle id='alert-dialog-title'>Recent Orders</DialogTitle>
+        <DialogTitle id='alert-dialog-title'>
+          See what all our customers have ordered
+        </DialogTitle>
         <DialogContent dividers>
           <List>{ordersList}</List>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary' autoFocus>
-            Agree
+            Back
           </Button>
         </DialogActions>
       </Dialog>

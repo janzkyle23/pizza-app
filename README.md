@@ -1,5 +1,9 @@
 This is a single-page app written using React + TypeScript + Material-UI for the frontend and Express + Mongoose for the backend
 
+You may check the app at: https://kyle-pizza-app.netlify.app/
+
+The backend API (enabled CORS for all origins) can be accessed here: https://pizza-app-server.herokuapp.com/api/orders
+
 # Setting up
 
 ## Requirements

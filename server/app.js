@@ -1,9 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const orders = require('./api/orders');
 const mongoose = require('mongoose');
 
 const app = express();
 
+// enable cors for all origins
+app.use(cors());
 // parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

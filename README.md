@@ -44,8 +44,9 @@ To run client:
 cd client
 yarn start
 ```
+Before running the server, change `proxy` value in client/package.json to http://localhost:3001
 
-To run server (in a separate terminal):
+To run server (in a separate terminal from root directory):
 
 ```
 cd server
